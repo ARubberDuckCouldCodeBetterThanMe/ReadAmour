@@ -1,3 +1,5 @@
+console.log("Script.js file is running!");
+
 /**************************************************************
   1) DIMENSION SCORES
      We track "H", "Y", and "W". They can be positive or negative.
