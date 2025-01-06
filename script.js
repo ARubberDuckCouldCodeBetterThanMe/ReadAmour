@@ -1,4 +1,20 @@
 console.log("Script.js file is running!");
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM fully loaded");
+
+  const form = document.getElementById("reading-archetype-test");
+  console.log("Form found:", !!form);
+
+  if (!form) {
+    console.error("Form not found!");
+    return;
+  }
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    console.log("Form submit event triggered!");
+  });
+});
 
 /**************************************************************
   1) DIMENSION SCORES
