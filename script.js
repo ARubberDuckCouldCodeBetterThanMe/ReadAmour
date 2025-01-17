@@ -16,23 +16,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-/**************************************************************
-  1) DIMENSION SCORES
-     We track "H", "Y", and "W". They can be positive or negative.
-**************************************************************/
 let dimensionScores = {
-    H: 0, // "How" they read
-    Y: 0, // "Why" they read
-    W: 0  // "What" they read
+    H: 0, //how
+    Y: 0, //why
+    W: 0  //what
   };
   
-  /**************************************************************
-    2) QUESTION CONFIGURATION
-       "pos" => "Strongly Agree" adds +2, "Strongly Disagree" => -2.
-       "neg" => "Strongly Agree" => -2, "Strongly Disagree" => +2.
-  **************************************************************/
   const questionMap = {
-    // HOW (H)
+   
     H1:  { dimension: "H", sign: "pos" },
     H2:  { dimension: "H", sign: "neg" },
     H3:  { dimension: "H", sign: "neg" },
@@ -46,8 +37,6 @@ let dimensionScores = {
     H11: { dimension: "H", sign: "pos" },
     H12: { dimension: "H", sign: "pos" },
     H13: { dimension: "H", sign: "neg" },
-  
-    // WHY (Y)
     Y1:  { dimension: "Y", sign: "neg" },
     Y2:  { dimension: "Y", sign: "pos" },
     Y3:  { dimension: "Y", sign: "neg" },
@@ -61,8 +50,6 @@ let dimensionScores = {
     Y11: { dimension: "Y", sign: "neg" },
     Y12: { dimension: "Y", sign: "pos" },
     Y13: { dimension: "Y", sign: "neg" },
-  
-    // WHAT (W)
     W1:  { dimension: "W", sign: "neg" },
     W2:  { dimension: "W", sign: "pos" },
     W3:  { dimension: "W", sign: "pos" },
@@ -79,20 +66,12 @@ let dimensionScores = {
     W14: { dimension: "W", sign: "pos" }
   };
   
-  /**************************************************************
-    3) getScore(radioValue, sign)
-       Convert a 1..5 radioValue => -2..+2, then flip if sign=neg.
-  **************************************************************/
   function getScore(radioValue, sign) {
     // 1 => -2, 2 => -1, 3 => 0, 4 => +1, 5 => +2
     const baseScore = parseInt(radioValue, 10) - 3;
     return (sign === "neg") ? -baseScore : baseScore;
   }
   
-  /**************************************************************
-    4) calculateScores()
-       Loops through all checked radio buttons, updates dimensionScores.
-  **************************************************************/
   function calculateScores() {
     // Reset each time
     dimensionScores.H = 0;
@@ -103,8 +82,8 @@ let dimensionScores = {
     const checkedInputs = form.querySelectorAll("input[type='radio']:checked");
   
     checkedInputs.forEach((input) => {
-      const qName = input.name;   // e.g., "H1", "Y5", ...
-      const qValue = input.value; // "1".."5"
+      const qName = input.name;   
+      const qValue = input.value; 
       const config = questionMap[qName];
       if (config) {
         const { dimension, sign } = config;
@@ -114,38 +93,27 @@ let dimensionScores = {
     });
   }
   
-  /**************************************************************
-    5) getDimensionSign(score)
-       If score > 0 => "+"
-       If score < 0 => "-"
-       If score === 0 => "tempZero"
-  **************************************************************/
+  
   function getDimensionSign(score) {
     if (score > 0) return "+";
     if (score < 0) return "-";
-    return "tempZero"; // We'll convert it to + unless all three are zero.
+    return "tempZero"; 
   }
   
-  /**************************************************************
-    6) determineArchetype(hSign, ySign, wSign)
-       - If all three = "tempZero" => The Specialist
-       - Otherwise push tempZero => "+"
-       - Then match final triple of + or - to an archetype.
-  **************************************************************/
+  
   function determineArchetype(hSign, ySign, wSign) {
     // If all three are 0 => The Specialist
     if (hSign === "tempZero" && ySign === "tempZero" && wSign === "tempZero") {
       return "The Specialist";
     }
   
-    // If ANY dimension is "tempZero", push it to "+"
+    // If any (not all) dimensions are 0 push it to +
     if (hSign === "tempZero") hSign = "+";
     if (ySign === "tempZero") ySign = "+";
     if (wSign === "tempZero") wSign = "+";
   
-    const combo = `${hSign}${ySign}${wSign}`; // e.g. "++-", "-+-", etc.
-  
-    // Here’s an example 8 archetypes:
+    const combo = `${hSign}${ySign}${wSign}`; 
+
     const archetypeMap = {
       "+++": "The Dreamer",
       "++-": "The Wanderer",
@@ -157,13 +125,10 @@ let dimensionScores = {
       "---": "The Trailblazer"
     };
   
-    // Return the matching archetype or fallback
+    
     return archetypeMap[combo] || "Some Unique Hybrid";
   }
   
-  /**************************************************************
-    7) MAIN: On DOMContentLoaded, attach form submit handler.
-  **************************************************************/
   document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("reading-archetype-test");
     if (!form) return;
@@ -171,18 +136,18 @@ let dimensionScores = {
     form.addEventListener("submit", (event) => {
       event.preventDefault();
   
-      // Calculate dimension scores
+    
       calculateScores();
   
-      // Convert numeric scores to signs
+    
       let hSign = getDimensionSign(dimensionScores.H);
       let ySign = getDimensionSign(dimensionScores.Y);
       let wSign = getDimensionSign(dimensionScores.W);
   
-      // Determine the final archetype
+      
       const archetype = determineArchetype(hSign, ySign, wSign);
   
-      // Display the result in a <div id="archetype-result">
+      
       let resultDiv = document.getElementById("archetype-result");
       if (!resultDiv) {
         resultDiv = document.createElement("div");
@@ -196,7 +161,7 @@ let dimensionScores = {
         <p>(H: ${dimensionScores.H}, Y: ${dimensionScores.Y}, W: ${dimensionScores.W})</p>
       `;
   
-      // Optional: smoothly scroll to the result
+      
       resultDiv.scrollIntoView({ behavior: "smooth" });
     });
   });
